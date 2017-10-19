@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>
+A Simple HTML Document
+</title>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<h3>Participant Selection</h3><p>There is little information on the selection of participatory experts and innovators but it can be assumed that they were contacts of the event collaborators, Levuur and Kortom, or known to the Flemish government. Nevertheless, there does appear to have been a diversity of view points and opinions represented since one of the keynote speakers, Manu Claeys, is a well known civil society activist and essayist famous for organizing an opposition movement against the “Oosterweelverbinding” – a controversial government development plan of the Antwerp ‘Ring Road’.</p><p>With the new communication policy and the drafting of the 2014-2020 Communication Vision, the blog “Toe Com St” was established to allow active participation from any individual in the process. It was through this blog that the event “Participatie De Wol Bij Al Het Geblaat” was announced and all minutes and activities were archived and made available for public use and comment. Open calls for participants were made on the Toe Com St blog, through the government’s website and on circulated on various social media channels. The sign-up form was located on the Kortom website; ticket prices were between 120 and 35 Euros depending on whether or not someone was a member of an invited organization and which events one wanted to attend (day time lectures and/or night time workshop).</p><p>The event was marketed to “communications officials, policy makers, politicians and anyone who has a "design question", and for anyone who wants to debate about it [the new government communications policy].”<a href="#_ftn1" name="_ftnref1" title="" id="_ftnref1">[1]</a> Over two hundred people attended – a full list of participants is available in the external links section below.</p><p><a href="#_ftnref1" name="_ftn1" title="" id="_ftn1">[1]</a> <a href="http://communicatie.vlaanderen.be/nlapps/docs/default.asp?id=1164">http://communicatie.vlaanderen.be/nlapps/docs/default.asp?id=1164</a></p>
+<div id="ui_container"><button id="ann_button" type="button">Add Annotation</button></div>
+
+<script>
+jQuery(document).ready(function(){
+	function highlightSelection() {
+    	var userSelection = window.getSelection().getRangeAt(0);
+    	highlightRange(userSelection);
+	}
+
+	function highlightRange(range) {
+    	var newNode = document.createElement("div");
+    	newNode.setAttribute(
+			"style",
+       		"background-color: yellow; display: inline;"
+    	);
+    	range.surroundContents(newNode);
+	}
+
+	document.addEventListener("mouseup", function(e){
+		var userSelection = window.getSelection().getRangeAt(0);
+    	if(userSelection.startOffset != userSelection.endOffset){
+    		$("#ui_container").offset({ top: (e.pageY + 10), left: (e.pageX + 10)});
+    		$("#ann_button").on("click", highlightSelection);
+    	}
+	});
+});
+</script>
+</body>
+</html>
