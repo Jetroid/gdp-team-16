@@ -26,6 +26,10 @@ public class Annotation {
         endIndex = end;
     }
 
+    public int getId() { return id; }
+    public int getCaseId() { return caseId; }
+    public int getAuthorId() { return authorId; }
+
     public String getQuote(){ return quoteText.getQuote(); }
     public String getText(){ return annotationText; }
 

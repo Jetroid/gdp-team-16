@@ -9,7 +9,6 @@ public class Case {
     protected int version;
     protected int authorId;
     protected String caseText;
-
     protected boolean allowsAnnotations;
 
     public Case(String text, int authorid){
