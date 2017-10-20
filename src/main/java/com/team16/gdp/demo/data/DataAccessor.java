@@ -1,4 +1,4 @@
-package data;
+package com.team16.gdp.demo.data;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public interface DataAccessor {
     boolean addAnnotation(int caseId, Annotation a);
 
     /**
-     * Retrieves the case object with all available data about the case given a case ID. Returns null if no case
+     * Retrieves the case object with all available com.team16.gdp.demo.data about the case given a case ID. Returns null if no case
      * exists with the provided ID.
      * @param caseId ID of case
      * @return Case object for this ID
