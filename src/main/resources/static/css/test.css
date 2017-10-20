@@ -1,0 +1,30 @@
+body{
+    background: #0f0f0f;
+}
+#page-container{
+    padding: 5px 15px;
+    background: #f0f0f0;
+    position: relative;
+    top: 50px;
+    left: 20%;
+    right: 20%;
+    width: 60%;
+    border-radius: 30px;
+}
+.annotation-container{
+    background: #fafafa;
+    padding: 5px 5px;
+    border: solid 1px #020202;
+    border-radius: 2px;
+}
+#annotations {
+
+}
+.quotation-container{
+    border: solid 2px #020202;
+    border-radius: 5px;
+    padding: 5px;
+}
+.quotation{
+    background-color: rgba(240, 240, 78, 0.8);
+}

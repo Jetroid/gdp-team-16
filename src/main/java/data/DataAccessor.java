@@ -7,12 +7,40 @@ import java.util.List;
  */
 public interface DataAccessor {
 
+    Case readCase(int caseID);
+
+    int createAnnotation(int caseID, int authorID, int quoteID, String text);
+
+    Annotation readAnnotation(int annotationID);
+
+    boolean updateAnnotation(int annotationID, String text);
+
+    boolean deleteAnnotation(int annotationID);
+
+    int createPerson(String forename, String surname, String email);
+
+    Person readPerson(int personID);
+
+    boolean updatePerson(int personID, String forename, String surname, String email);
+
+    boolean deletePerson(int personID);
+
+    int createQuotation(int caseID, int start, int end, String text);
+
+    int readQuotation(int annotationID);
+
+    boolean updateQuotation(int annotationID, String text);
+
+    boolean deleteQuotation(int annotationID);
+
     /**
      * Returns all annotations for a given case identified by its case ID.
      * @param caseId ID of case
      * @return List of annotations
      */
     List<Annotation> getAnnotationsForCase(int caseId);
+
+
 
     /**
      * Returns a boolean for whether a given case can accept annotations.
