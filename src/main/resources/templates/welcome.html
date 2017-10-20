@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Annotations View Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+</head>
+<body>
+
+<h1>Annotations associated with document</h1>
+<div>
+    <th:block th:each="user : ${users}">
+        <h2 th:text="Written by ${annotation.person.firstname} ${annotation.person.surname}">
+            Written by James Bond
+        </h2>
+    </th:block>
+</div>
+</body>
+</html>
