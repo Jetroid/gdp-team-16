@@ -9,10 +9,12 @@
 
 <h1>Annotations associated with document</h1>
 <div>
-    <th:block th:each="user : ${users}">
-        <h2 th:text="Written by ${annotation.person.firstname} ${annotation.person.surname}">
+    <th:block th:each="annotation : ${annotations}">
+        <h2 th:text="'Written by ' + ${people.get(__${annotation.authorId}__).forename} + ' ' + ${people.get(__${annotation.authorId}__).surname}">
             Written by James Bond
         </h2>
+        <cite th:text="${annotation.quote}">Quote that is being quoted</cite>
+        <p th:text="${annotation.text}">Text of an annotation</p>
     </th:block>
 </div>
 </body>
