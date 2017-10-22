@@ -6,30 +6,26 @@ package com.team16.gdp.demo.data;
  * Java class representing a single annotation.
  *
  */
-public class Annotation {
+public class Annotation implements DataObject{
 
-    protected int id;
-    protected int caseId;
-    protected int authorId;
+    private int id;
+    private int caseId;
+    private int authorId;
+    private int quoteId;
+    private String text;
 
-    protected Quotation quotation;
-    protected String annotationText;
-
-
-    public Annotation(int caseid, int authorid, String text, String quote, int start, int end){
-        caseId = caseid;
-        authorId = authorid;
-        annotationText = text;
-        quotation = new Quotation(quote, start, end);
+    public Annotation(int annotationID, int caseId, int authorId, int quoteId, String text){
+        this.id = annotationID;
+        this.caseId = caseId;
+        this.authorId = authorId;
+        this.quoteId = quoteId;
+        this.text = text;
     }
 
     public int getId() { return id; }
     public int getCaseId() { return caseId; }
     public int getAuthorId() { return authorId; }
-
-    public String getQuoteText(){ return quotation.getQuote(); }
-    public String getText(){ return annotationText; }
-
-    public Quotation getQuote(){ return quotation; }
+    public String getText(){ return text; }
+    public int getQuoteId(){ return quoteId; }
 
 }
