@@ -29,13 +29,13 @@ public class XMLDataObjectFactory {
      * @return Case object for that ID
      */
     public Case buildCase(int id){
-        String caseDataString = findXMLData(caseXMLPath, "Case", "ID", id, true).get(0);
+        List<String> caseDataStrings = findXMLData(caseXMLPath, "Case", "ID", id, true);
 
-        if (caseDataString == null){
+        if (caseDataStrings.size() == 0){
             return null;
         }
 
-        return makeCaseFromString(caseDataString);
+        return makeCaseFromString(caseDataStrings.get(0));
     }
 
     /**
@@ -44,14 +44,14 @@ public class XMLDataObjectFactory {
      * @return Annotation object for the ID.
      */
     public Annotation buildAnnotation(int id){
-        String caseDataString = findXMLData(annotationXMLPath, "Annotation", "ID", id, true).get(0);
+        List<String> caseDataStrings = findXMLData(annotationXMLPath, "Annotation", "ID", id, true);
 
-        if (caseDataString == null){
+        if (caseDataStrings.size() == 0){
             return null;
         }
 
         //Annotation building and return
-        return makeAnnotationFromString(caseDataString);
+        return makeAnnotationFromString(caseDataStrings.get(0));
     }
 
     /**
@@ -60,11 +60,13 @@ public class XMLDataObjectFactory {
      * @return Person Object
      */
     public Person buildPerson(int id){
-        String caseDataString = findXMLData(personXMLPath, "Person", "ID", id, true).get(0);
+        List<String> caseDataStrings = findXMLData(personXMLPath, "Person", "ID", id, true);
 
-        if (caseDataString == null){
+        if (caseDataStrings.size() == 0){
             return null;
         }
+
+        String caseDataString = caseDataStrings.get(0);
 
         int phId = id;
         String phForename = getXMLFieldString(caseDataString, "Forename");
@@ -113,10 +115,55 @@ public class XMLDataObjectFactory {
         return cases;
     }
 
-    //TODO This method :L
+    /**
+     * Adds an annotation entry to the XML file with the same field values as the provided object.
+     * Will add to the quotations file automatically if needed.
+     * @param annotation Annotation to add.
+     * @return True if successful
+     */
     public boolean addAnnotation(Annotation annotation){
 
-        return false;
+        List<String> annoStrings = findXMLData(annotationXMLPath, "Annotation", null, 0, false);
+
+        //Add all existing annotations and quotations to a list
+        List<Annotation> annotations = new ArrayList<>();
+        List<Quotation> quotes = new ArrayList<>();
+
+        for (String s : annoStrings){
+            Annotation a = makeAnnotationFromString(s);
+            annotations.add(a);
+            if(!quotes.contains(annotation.getQuote())) {
+                quotes.add(a.getQuote());
+            }
+        }
+
+        //Sorting out indexes and the like:
+        //add new annotation to the end with a new index.
+        if (annotations.size() == 0){
+            annotation.id = 1;
+        }else {
+            annotation.id = annotations.get(annotations.size() -1).id + 1;
+        }
+        annotations.add(annotation);
+
+        //add new quote to the end with a new index.
+        if (quotes.size() == 0){
+            //If no quotes are stored, this get the id of 1.
+            annotation.getQuote().id = 1;
+        }else {
+            if(!quotes.contains(annotation.getQuote())) {
+                //If quote is not already stored, give it new id and store it.
+                annotation.getQuote().id = quotes.get(quotes.size() -1).id + 1;
+                quotes.add(annotation.getQuote());
+            }else{
+                //get the ID of the same quote that is already stored.
+                annotation.getQuote().id = quotes.get(quotes.indexOf(annotation.getQuote())).getId();
+            }
+        }
+
+
+        //Write out, and return success.
+        return writeOutAnnotations(annotations) && writeOutQuotations(quotes);
     }
 
 
@@ -185,7 +232,7 @@ public class XMLDataObjectFactory {
      * @return Value of first field with the tag
      */
     private String getXMLFieldString(String XMLdata, String tag){
-        Pattern p = Pattern.compile("<"+ tag +">(.*?)</"+ tag +">", Pattern.DOTALL);
+        Pattern p = Pattern.compile("<" + tag + ">(.*?)</" + tag + ">", Pattern.DOTALL);
         Matcher m = p.matcher(XMLdata);
         m.find();
         return m.group(1);
@@ -201,7 +248,7 @@ public class XMLDataObjectFactory {
         int phCaseId = Integer.parseInt(getXMLFieldString(xmlFields, "CaseID"));
         int phAuthorId = Integer.parseInt(getXMLFieldString(xmlFields, "AuthorID"));
         int phQuoteId = Integer.parseInt(getXMLFieldString(xmlFields, "QuoteID"));
-        String phText = getXMLFieldString(xmlFields, "Text");
+        String phText = getXMLFieldString(xmlFields, "Text").replace("\n", "").replace("\t", "");
 
         //Getting Quote Data
         String quoteDataString = findXMLData(quotesXMLPath, "Quotation", "ID", phQuoteId, true).get(0);
@@ -210,9 +257,9 @@ public class XMLDataObjectFactory {
         int phEnd =  Integer.parseInt(getXMLFieldString(quoteDataString, "EndIndex"));
 
 
-        Annotation anno = new Annotation(phAuthorId, phText, quote, phStart, phEnd);
+        Annotation anno = new Annotation(phCaseId, phAuthorId, phText, quote, phStart, phEnd);
         anno.id = phId;
-        anno.caseId = phCaseId;
+        anno.getQuote().id = phQuoteId;
 
         return anno;
     }
@@ -236,6 +283,99 @@ public class XMLDataObjectFactory {
 
         return c;
     }
+
+    /**
+     * Given a list of annotations, the annotation xml file will be overwritten with this data.
+     * @param annotations
+     * @return
+     */
+    private boolean writeOutAnnotations(List<Annotation> annotations){
+        try {
+            BufferedWriter bw = new BufferedWriter(new PrintWriter(new File(annotationXMLPath)));
+
+            bw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            bw.newLine();
+            bw.write("<Annotations>");
+            bw.newLine();
+
+            for (Annotation a : annotations){
+                bw.write(makeXMLStringFromAnnotation(a));
+                bw.newLine();
+            }
+
+            bw.write("</Annotations>");
+
+            bw.flush();
+            bw.close();
+            return true;
+        }catch(IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Makes an XML string that would represent the annotation provided.
+     * i.e. -> <Annotation>...</Annotation>
+     * @param a Annotation to encode
+     * @return Fields in XML format
+     */
+    private String makeXMLStringFromAnnotation(Annotation a){
+        String output = "";
+
+        output = output + "\t<Annotation>\n";
+
+        output = output + "\t\t<ID>" + a.id + "</ID>\n";
+        output = output + "\t\t<CaseID>" + a.caseId + "</CaseID>\n";
+        output = output + "\t\t<AuthorID>" + a.authorId + "</AuthorID>\n";
+        output = output + "\t\t<QuoteID>" + a.getQuote().id + "</QuoteID>\n";
+        output = output + "\t\t<Text>\n\t\t\t" + a.getText() + "\n\t\t</Text>\n";
+
+        output = output + "\t</Annotation>\n";
+
+        return output;
+    }
+
+
+    private boolean writeOutQuotations(List<Quotation> quotations){
+        try {
+            BufferedWriter bw = new BufferedWriter(new PrintWriter(new File(quotesXMLPath)));
+
+            bw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            bw.newLine();
+            bw.write("<Quotations>");
+            bw.newLine();
+
+            for (Quotation q : quotations){
+                bw.write(makeXMLStringFromQuotation(q));
+                bw.newLine();
+            }
+
+            bw.write("</Quotations>");
+
+            bw.flush();
+            bw.close();
+            return true;
+        }catch(IOException e) {
+            return false;
+        }
+    }
+
+    private String makeXMLStringFromQuotation(Quotation q){
+        String output = "";
+
+        output = output + "\t<Quotation>\n";
+
+        output = output + "\t\t<ID>" + q.id + "</ID>\n";
+        output = output + "\t\t<StartIndex>" + q.getStartIndex() + "</StartIndex>\n";
+        output = output + "\t\t<EndIndex>" + q.getEndIndex() + "</EndIndex>\n";
+        output = output + "\t\t<Text>" + q.getQuote() + "</Text>\n";
+
+        output = output + "\t</Quotation>\n";
+
+        return output;
+    }
+
+
 
 
 }

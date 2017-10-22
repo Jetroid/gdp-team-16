@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Quotations>
-    <Quotation>
-        <ID>1</ID>
-        <StartIndex>20</StartIndex>
-        <EndIndex>30</EndIndex>
-        <Text>In 2015 the South Australian government established a Royal Commission</Text>
-    </Quotation>
+	<Quotation>
+		<ID>1</ID>
+		<StartIndex>20</StartIndex>
+		<EndIndex>30</EndIndex>
+		<Text>In 2015 the South Australian government established a Royal Commission</Text>
+	</Quotation>
+
+	<Quotation>
+		<ID>2</ID>
+		<StartIndex>30</StartIndex>
+		<EndIndex>45</EndIndex>
+		<Text>nuclear fuel cycle </Text>
+	</Quotation>
 
 </Quotations>

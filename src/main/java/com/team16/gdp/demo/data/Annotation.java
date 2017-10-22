@@ -16,7 +16,8 @@ public class Annotation {
     protected String annotationText;
 
 
-    public Annotation(int authorid, String text, String quote, int start, int end){
+    public Annotation(int caseid, int authorid, String text, String quote, int start, int end){
+        caseId = caseid;
         authorId = authorid;
         annotationText = text;
         quotation = new Quotation(quote, start, end);

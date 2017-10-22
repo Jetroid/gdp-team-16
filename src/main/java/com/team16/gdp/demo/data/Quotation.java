@@ -21,6 +21,11 @@ public class Quotation {
     public int getStartIndex(){ return startIndex; }
     public int getEndIndex(){ return endIndex; }
 
-
+    public boolean equals(Object o){
+        return o instanceof Quotation
+                && ((Quotation) o).getQuote().equals(quote)
+                && ((Quotation) o).getStartIndex() == startIndex
+                && ((Quotation) o).getEndIndex() == endIndex;
+    }
 
 }
