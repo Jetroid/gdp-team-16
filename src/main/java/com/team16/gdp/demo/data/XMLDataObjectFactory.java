@@ -164,7 +164,8 @@ public class XMLDataObjectFactory {
         //Now we check if the Quotation is already stored in the XML file. If it is, we don't need to add it again.
         if (quotes.contains(q)){
             //return id of the quotation as it appears in the list.
-            return quotes.get(quotes.indexOf(q)).getId();
+            q.id = quotes.get(quotes.indexOf(q)).getId();
+            return q.getId();
 
         }else {
             //give the new quote an appropriate ID and add it to the file.
@@ -283,8 +284,8 @@ public class XMLDataObjectFactory {
     private Quotation makeQuotationFromString(String xmlFields){
         int id = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
         String quote = getXMLFieldString(xmlFields, "Text");
-        int start =  Integer.parseInt(getXMLFieldString(xmlFields, "StartIndex"));
-        int end =  Integer.parseInt(getXMLFieldString(xmlFields, "EndIndex"));
+        int start = Integer.parseInt(getXMLFieldString(xmlFields, "StartIndex"));
+        int end = Integer.parseInt(getXMLFieldString(xmlFields, "EndIndex"));
 
         Quotation q = new Quotation(quote, start, end);
         q.id = id;
