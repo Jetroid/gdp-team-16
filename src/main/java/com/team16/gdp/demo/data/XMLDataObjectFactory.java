@@ -29,25 +29,13 @@ public class XMLDataObjectFactory {
      * @return Case object for that ID
      */
     public Case buildCase(int id){
-        //String caseDataString = findCaseData(id);
         String caseDataString = findXMLData(caseXMLPath, "Case", "ID", id, true).get(0);
 
         if (caseDataString == null){
             return null;
         }
 
-        int phId = id;
-        int phVersion = Integer.parseInt(getXMLFieldString(caseDataString, "Version"));
-        int phAuthorId = Integer.parseInt(getXMLFieldString(caseDataString, "AuthorID"));
-        boolean phAllowsAnnotations = Boolean.parseBoolean(getXMLFieldString(caseDataString, "AllowAnnotations"));
-        String phCaseText = getXMLFieldString(caseDataString, "Text");
-
-        Case c = new Case(phCaseText, phAuthorId);
-        c.id = phId;
-        c.version = phVersion;
-        c.allowsAnnotations = phAllowsAnnotations;
-
-        return c;
+        return makeCaseFromString(caseDataString);
     }
 
     /**
@@ -62,25 +50,8 @@ public class XMLDataObjectFactory {
             return null;
         }
 
-        //Annotation com.team16.gdp.demo.data
-        int phId = id;
-        int phCaseId = Integer.parseInt(getXMLFieldString(caseDataString, "CaseID"));
-        int phAuthorId = Integer.parseInt(getXMLFieldString(caseDataString, "AuthorID"));
-        int phQuoteId = Integer.parseInt(getXMLFieldString(caseDataString, "QuoteID"));
-        String phText = getXMLFieldString(caseDataString, "Text");
-
-        //Getting Quote Data
-        String quoteDataString = findXMLData(quotesXMLPath, "Quotation", "ID", phQuoteId, true).get(0);
-        String quote = getXMLFieldString(quoteDataString, "Text");
-        int phStart =  Integer.parseInt(getXMLFieldString(quoteDataString, "StartIndex"));
-        int phEnd =  Integer.parseInt(getXMLFieldString(quoteDataString, "EndIndex"));
-
-
-        Annotation anno = new Annotation(phAuthorId, phText, quote, phStart, phEnd);
-        anno.id = phId;
-        anno.caseId = phCaseId;
-
-        return anno;
+        //Annotation building and return
+        return makeAnnotationFromString(caseDataString);
     }
 
     /**
@@ -109,10 +80,57 @@ public class XMLDataObjectFactory {
         return p;
     }
 
+    /**
+     * Returns a list of all the annotations associated with a case in order of first submission (ID).
+     * @param caseID ID of the case
+     * @return List of annotations
+     */
+    public List<Annotation> getAnnotationsForCase(int caseID){
+        ArrayList<Annotation> annotations = new ArrayList<>();
+
+        List<String> xmlDataStrings = findXMLData(annotationXMLPath, "Annotation", "CaseID", caseID, false);
+
+        for (String s : xmlDataStrings){
+            annotations.add(makeAnnotationFromString(s));
+        }
+
+        return annotations;
+    }
+
+    /**
+     * Returns all cases stored within the XML file as a list of case objects.
+     * @return List of all cases.
+     */
+    public List<Case> getAllCases(){
+        ArrayList<Case> cases = new ArrayList<>();
+
+        List<String> xmlDataStrings = findXMLData(caseXMLPath, "Case", null, 0, false);
+
+        for (String s : xmlDataStrings){
+            cases.add(makeCaseFromString(s));
+        }
+
+        return cases;
+    }
+
+    //TODO This method :L
+    public boolean addAnnotation(Annotation annotation){
+
+        return false;
+    }
+
+
+
+
+
+
+
+    //  ------  Helping Functions  -------
 
 
     /**
      * Method for searching for an item satisfying a condition for one of it's fields.
+     * Supplying a null value to idTag will return all items.
      * @param filePath XML file to search
      * @param parentTag Item needed
      * @param idTag Tag for use in identification
@@ -136,7 +154,7 @@ public class XMLDataObjectFactory {
 
                 //End of annotation, check id and return if needed.
                 if(line.contains("</"+parentTag+">")){
-                    if (getXMLFieldString(item, idTag).equals(idVal+"")){
+                    if (idTag == null || getXMLFieldString(item, idTag).equals(idVal+"")){
                         items.add(item);
                         if(first){
                             return items;
@@ -172,5 +190,52 @@ public class XMLDataObjectFactory {
         m.find();
         return m.group(1);
     }
+
+    /**
+     * Builds an annotation object from a string of fields in xml format.
+     * @param xmlFields Fields in xml format
+     * @return Annotation object
+     */
+    private Annotation makeAnnotationFromString(String xmlFields){
+        int phId = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
+        int phCaseId = Integer.parseInt(getXMLFieldString(xmlFields, "CaseID"));
+        int phAuthorId = Integer.parseInt(getXMLFieldString(xmlFields, "AuthorID"));
+        int phQuoteId = Integer.parseInt(getXMLFieldString(xmlFields, "QuoteID"));
+        String phText = getXMLFieldString(xmlFields, "Text");
+
+        //Getting Quote Data
+        String quoteDataString = findXMLData(quotesXMLPath, "Quotation", "ID", phQuoteId, true).get(0);
+        String quote = getXMLFieldString(quoteDataString, "Text");
+        int phStart =  Integer.parseInt(getXMLFieldString(quoteDataString, "StartIndex"));
+        int phEnd =  Integer.parseInt(getXMLFieldString(quoteDataString, "EndIndex"));
+
+
+        Annotation anno = new Annotation(phAuthorId, phText, quote, phStart, phEnd);
+        anno.id = phId;
+        anno.caseId = phCaseId;
+
+        return anno;
+    }
+
+    /**
+     * Builds a case object from a string of case fields in xml format.
+     * @param xmlFields Fields in xml format
+     * @return Case object
+     */
+    private Case makeCaseFromString(String xmlFields){
+        int phId = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
+        int phVersion = Integer.parseInt(getXMLFieldString(xmlFields, "Version"));
+        int phAuthorId = Integer.parseInt(getXMLFieldString(xmlFields, "AuthorID"));
+        boolean phAllowsAnnotations = Boolean.parseBoolean(getXMLFieldString(xmlFields, "AllowAnnotations"));
+        String phCaseText = getXMLFieldString(xmlFields, "Text");
+
+        Case c = new Case(phCaseText, phAuthorId);
+        c.id = phId;
+        c.version = phVersion;
+        c.allowsAnnotations = phAllowsAnnotations;
+
+        return c;
+    }
+
 
 }
