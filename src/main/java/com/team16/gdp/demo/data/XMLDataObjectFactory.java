@@ -1,6 +1,5 @@
 package com.team16.gdp.demo.data;
 
-import com.sun.org.apache.xpath.internal.operations.Quo;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -16,13 +15,13 @@ public class XMLDataObjectFactory {
     String caseXMLPath;
     String annotationXMLPath;
     String personXMLPath;
-    String quotesXMLPath;
+    String quotationXMLPath;
 
-    public XMLDataObjectFactory(String casesXML, String annosXML, String peopleXML, String quotesXML){
+    public XMLDataObjectFactory(String casesXML, String annosXML, String peopleXML, String quotationXML){
         caseXMLPath = casesXML;
         annotationXMLPath = annosXML;
         personXMLPath = peopleXML;
-        quotesXMLPath = quotesXML;
+        quotationXMLPath = quotationXML;
     }
 
     /**
@@ -31,13 +30,13 @@ public class XMLDataObjectFactory {
      * @return Case object for that ID
      */
     public Case buildCase(int id){
-        List<String> caseDataStrings = findXMLData(caseXMLPath, "Case", "ID", id, true);
+        List<String> data = findXMLData(caseXMLPath, "Case", "ID", id, true);
 
-        if (caseDataStrings.size() == 0){
+        if (data.size() == 0){
             return null;
         }
 
-        return makeCaseFromString(caseDataStrings.get(0));
+        return makeCaseFromString(data.get(0));
     }
 
     /**
@@ -46,14 +45,14 @@ public class XMLDataObjectFactory {
      * @return Annotation object for the ID.
      */
     public Annotation buildAnnotation(int id){
-        List<String> caseDataStrings = findXMLData(annotationXMLPath, "Annotation", "ID", id, true);
+        List<String> data = findXMLData(annotationXMLPath, "Annotation", "ID", id, true);
 
-        if (caseDataStrings.size() == 0){
+        if (data.size() == 0){
             return null;
         }
 
         //Annotation building and return
-        return makeAnnotationFromString(caseDataStrings.get(0));
+        return makeAnnotationFromString(data.get(0));
     }
 
     /**
@@ -62,25 +61,18 @@ public class XMLDataObjectFactory {
      * @return Person Object
      */
     public Person buildPerson(int id){
-        List<String> caseDataStrings = findXMLData(personXMLPath, "Person", "ID", id, true);
+        List<String> dataStrings = findXMLData(personXMLPath, "Person", "ID", id, true);
 
-        if (caseDataStrings.size() == 0){
+        if (dataStrings.size() == 0){
             return null;
         }
 
-        String caseDataString = caseDataStrings.get(0);
+        String data = dataStrings.get(0);
 
-        String forename = getXMLFieldString(caseDataString, "Forename");
-        String surname = getXMLFieldString(caseDataString, "Surname");
-        String email = getXMLFieldString(caseDataString, "Email");
-
-        Person p = new Person();
-        p.id = id;
-        p.forename = forename;
-        p.surname = surname;
-        p.email = email;
-
-        return p;
+        String forename = getXMLFieldString(data, "Forename");
+        String surname = getXMLFieldString(data, "Surname");
+        String email = getXMLFieldString(data, "Email");
+        return new Person(id, forename, surname, email);
     }
 
     /**
@@ -123,8 +115,6 @@ public class XMLDataObjectFactory {
      * @return True if successful
      */
     public boolean addAnnotation(Annotation annotation){
-        //Check if the quote needs to be added first and get the quote ID we need later:
-        int quoteID = addQuotation(annotation.getQuote());
 
         //Add all existing annotations to a list
         List<String> annoStrings = findXMLData(annotationXMLPath, "Annotation", null, 0, false);
@@ -135,13 +125,6 @@ public class XMLDataObjectFactory {
             annotations.add(a);
         }
 
-        //Sorting out indexes and the like:
-        //add the new annotation to the end of the list with a new index.
-        if (annotations.size() == 0){
-            annotation.id = 1;
-        }else {
-            annotation.id = annotations.get(annotations.size() -1).id + 1;
-        }
         annotations.add(annotation);
 
         //Write out, and return success state.
@@ -155,33 +138,18 @@ public class XMLDataObjectFactory {
      */
     public Integer addQuotation(Quotation q){
         //Read all data into an list of data objects
-        List<String> annoStrings = findXMLData(quotesXMLPath, "Quotation", null, 0, false);
+        List<String> annoStrings = findXMLData(quotationXMLPath, "Quotation", null, 0, false);
         List<Quotation> quotes = new ArrayList<>();
         for(String s : annoStrings){
             quotes.add(makeQuotationFromString(s));
         }
 
-        //Now we check if the Quotation is already stored in the XML file. If it is, we don't need to add it again.
-        if (quotes.contains(q)){
-            //return id of the quotation as it appears in the list.
-            q.id = quotes.get(quotes.indexOf(q)).getId();
-            return q.getId();
+        //add to file:
+        quotes.add(q);
+        writeOutQuotations(quotes);
 
-        }else {
-            //give the new quote an appropriate ID and add it to the file.
-            if (quotes.size() == 0){
-                q.id = 1;
-            }else {
-                q.id = quotes.get(quotes.size() -1).getId() + 1;
-            }
-
-            //add to file:
-            quotes.add(q);
-            writeOutQuotations(quotes);
-
-            //return the new ID.
-            return q.getId();
-        }
+        //return the new ID.
+        return q.getId();
     }
 
 
@@ -265,15 +233,11 @@ public class XMLDataObjectFactory {
         int quoteId = Integer.parseInt(getXMLFieldString(xmlFields, "QuoteID"));
         String text = getXMLFieldString(xmlFields, "Text").replace("\n", "").replace("\t", "");
 
-        //Getting Quote Data
-        String quoteDataString = findXMLData(quotesXMLPath, "Quotation", "ID", quoteId, true).get(0);
-        Quotation q = makeQuotationFromString(quoteDataString);
+        return new Annotation(id, caseId, authorId, quoteId, text);
+    }
 
-        Annotation anno = new Annotation(caseId, authorId, text, q.getQuote(), q.getStartIndex(), q.getEndIndex());
-        anno.id = id;
-        anno.getQuote().id = quoteId;
 
-        return anno;
+        return new Person(id, forename, surname, email);
     }
 
     /**
@@ -283,16 +247,13 @@ public class XMLDataObjectFactory {
      */
     private Quotation makeQuotationFromString(String xmlFields){
         int id = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
-        String quote = getXMLFieldString(xmlFields, "Text");
+        int caseId = Integer.parseInt(getXMLFieldString(xmlFields, "CaseID"));
+        String text = getXMLFieldString(xmlFields, "Text");
         int start = Integer.parseInt(getXMLFieldString(xmlFields, "StartIndex"));
         int end = Integer.parseInt(getXMLFieldString(xmlFields, "EndIndex"));
 
-        Quotation q = new Quotation(quote, start, end);
-        q.id = id;
-
-        return q;
+        return new Quotation(id, caseId, text, start, end);
     }
-
 
     /**
      * Builds a case object from a string of case fields in xml format.
@@ -306,12 +267,7 @@ public class XMLDataObjectFactory {
         boolean allowsAnnotations = Boolean.parseBoolean(getXMLFieldString(xmlFields, "AllowAnnotations"));
         String caseText = getXMLFieldString(xmlFields, "Text");
 
-        Case c = new Case(caseText, authorId);
-        c.id = id;
-        c.version = version;
-        c.allowsAnnotations = allowsAnnotations;
-
-        return c;
+        return new Case(id, version, caseText, authorId, allowsAnnotations);
     }
 
     /**
@@ -321,7 +277,7 @@ public class XMLDataObjectFactory {
      */
     private boolean writeOutAnnotations(List<Annotation> annotations){
         try {
-            BufferedWriter bw = new BufferedWriter(new PrintWriter(new File(annotationXMLPath)));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(annotationXMLPath)));
 
             bw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             bw.newLine();
@@ -339,6 +295,7 @@ public class XMLDataObjectFactory {
             bw.close();
             return true;
         }catch(IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -354,10 +311,10 @@ public class XMLDataObjectFactory {
 
         output = output + "\t<Annotation>\n";
 
-        output = output + "\t\t<ID>" + a.id + "</ID>\n";
-        output = output + "\t\t<CaseID>" + a.caseId + "</CaseID>\n";
-        output = output + "\t\t<AuthorID>" + a.authorId + "</AuthorID>\n";
-        output = output + "\t\t<QuoteID>" + a.getQuote().id + "</QuoteID>\n";
+        output = output + "\t\t<ID>" + a.getId() + "</ID>\n";
+        output = output + "\t\t<CaseID>" + a.getCaseId() + "</CaseID>\n";
+        output = output + "\t\t<AuthorID>" + a.getAuthorId() + "</AuthorID>\n";
+        output = output + "\t\t<QuoteID>" + a.getQuoteId() + "</QuoteID>\n";
         output = output + "\t\t<Text>\n\t\t\t" + a.getText() + "\n\t\t</Text>\n";
 
         output = output + "\t</Annotation>\n";
@@ -372,7 +329,7 @@ public class XMLDataObjectFactory {
      */
     private boolean writeOutQuotations(List<Quotation> quotations){
         try {
-            BufferedWriter bw = new BufferedWriter(new PrintWriter(new File(quotesXMLPath)));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(quotationXMLPath)));
 
             bw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             bw.newLine();
@@ -390,6 +347,7 @@ public class XMLDataObjectFactory {
             bw.close();
             return true;
         }catch(IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -404,7 +362,7 @@ public class XMLDataObjectFactory {
 
         output = output + "\t<Quotation>\n";
 
-        output = output + "\t\t<ID>" + q.id + "</ID>\n";
+        output = output + "\t\t<ID>" + q.getId() + "</ID>\n";
         output = output + "\t\t<StartIndex>" + q.getStartIndex() + "</StartIndex>\n";
         output = output + "\t\t<EndIndex>" + q.getEndIndex() + "</EndIndex>\n";
         output = output + "\t\t<Text>" + q.getQuote() + "</Text>\n";
@@ -413,8 +371,5 @@ public class XMLDataObjectFactory {
 
         return output;
     }
-
-
-
 
 }
