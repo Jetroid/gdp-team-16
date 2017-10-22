@@ -1,5 +1,7 @@
 package com.team16.gdp.demo.data;
 
+import com.sun.org.apache.xpath.internal.operations.Quo;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ public class XMLDataObjectFactory {
     }
 
     /**
-     *Builds a Case Object from com.team16.gdp.demo.data stored in the XML store.
+     *Builds a Case Object from the XML store.
      * @param id ID of the case
      * @return Case object for that ID
      */
@@ -55,7 +57,7 @@ public class XMLDataObjectFactory {
     }
 
     /**
-     * Builds a Person object from the XML com.team16.gdp.demo.data for the ID given. Returns null if no com.team16.gdp.demo.data exists.
+     * Builds a Person object from the XML file for the ID given. Returns null if no person with this ID exists.
      * @param id Value of the ID
      * @return Person Object
      */
@@ -68,16 +70,15 @@ public class XMLDataObjectFactory {
 
         String caseDataString = caseDataStrings.get(0);
 
-        int phId = id;
-        String phForename = getXMLFieldString(caseDataString, "Forename");
-        String phSurname = getXMLFieldString(caseDataString, "Surname");
-        String phEmail = getXMLFieldString(caseDataString, "Email");
+        String forename = getXMLFieldString(caseDataString, "Forename");
+        String surname = getXMLFieldString(caseDataString, "Surname");
+        String email = getXMLFieldString(caseDataString, "Email");
 
         Person p = new Person();
-        p.id = phId;
-        p.forename = phForename;
-        p.surname = phSurname;
-        p.email = phEmail;
+        p.id = id;
+        p.forename = forename;
+        p.surname = surname;
+        p.email = email;
 
         return p;
     }
@@ -122,23 +123,20 @@ public class XMLDataObjectFactory {
      * @return True if successful
      */
     public boolean addAnnotation(Annotation annotation){
+        //Check if the quote needs to be added first and get the quote ID we need later:
+        int quoteID = addQuotation(annotation.getQuote());
 
+        //Add all existing annotations to a list
         List<String> annoStrings = findXMLData(annotationXMLPath, "Annotation", null, 0, false);
-
-        //Add all existing annotations and quotations to a list
         List<Annotation> annotations = new ArrayList<>();
-        List<Quotation> quotes = new ArrayList<>();
 
         for (String s : annoStrings){
             Annotation a = makeAnnotationFromString(s);
             annotations.add(a);
-            if(!quotes.contains(annotation.getQuote())) {
-                quotes.add(a.getQuote());
-            }
         }
 
         //Sorting out indexes and the like:
-        //add new annotation to the end with a new index.
+        //add the new annotation to the end of the list with a new index.
         if (annotations.size() == 0){
             annotation.id = 1;
         }else {
@@ -146,28 +144,44 @@ public class XMLDataObjectFactory {
         }
         annotations.add(annotation);
 
-        //add new quote to the end with a new index.
-        if (quotes.size() == 0){
-            //If no quotes are stored, this get the id of 1.
-            annotation.getQuote().id = 1;
-        }else {
-            if(!quotes.contains(annotation.getQuote())) {
-                //If quote is not already stored, give it new id and store it.
-                annotation.getQuote().id = quotes.get(quotes.size() -1).id + 1;
-                quotes.add(annotation.getQuote());
-            }else{
-                //get the ID of the same quote that is already stored.
-                annotation.getQuote().id = quotes.get(quotes.indexOf(annotation.getQuote())).getId();
-            }
-        }
-
-
-        //Write out, and return success.
-        return writeOutAnnotations(annotations) && writeOutQuotations(quotes);
+        //Write out, and return success state.
+        return writeOutAnnotations(annotations);
     }
 
+    /**
+     * Adds a quotation to the xml file if it is not already there, and returns the ID for the given quotation.
+     * @param q A quotation to add
+     * @return ID of the given Quotation in the XML file.
+     */
+    public Integer addQuotation(Quotation q){
+        //Read all data into an list of data objects
+        List<String> annoStrings = findXMLData(quotesXMLPath, "Quotation", null, 0, false);
+        List<Quotation> quotes = new ArrayList<>();
+        for(String s : annoStrings){
+            quotes.add(makeQuotationFromString(s));
+        }
 
+        //Now we check if the Quotation is already stored in the XML file. If it is, we don't need to add it again.
+        if (quotes.contains(q)){
+            //return id of the quotation as it appears in the list.
+            return quotes.get(quotes.indexOf(q)).getId();
 
+        }else {
+            //give the new quote an appropriate ID and add it to the file.
+            if (quotes.size() == 0){
+                q.id = 1;
+            }else {
+                q.id = quotes.get(quotes.size() -1).getId() + 1;
+            }
+
+            //add to file:
+            quotes.add(q);
+            writeOutQuotations(quotes);
+
+            //return the new ID.
+            return q.getId();
+        }
+    }
 
 
 
@@ -244,25 +258,40 @@ public class XMLDataObjectFactory {
      * @return Annotation object
      */
     private Annotation makeAnnotationFromString(String xmlFields){
-        int phId = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
-        int phCaseId = Integer.parseInt(getXMLFieldString(xmlFields, "CaseID"));
-        int phAuthorId = Integer.parseInt(getXMLFieldString(xmlFields, "AuthorID"));
-        int phQuoteId = Integer.parseInt(getXMLFieldString(xmlFields, "QuoteID"));
-        String phText = getXMLFieldString(xmlFields, "Text").replace("\n", "").replace("\t", "");
+        int id = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
+        int caseId = Integer.parseInt(getXMLFieldString(xmlFields, "CaseID"));
+        int authorId = Integer.parseInt(getXMLFieldString(xmlFields, "AuthorID"));
+        int quoteId = Integer.parseInt(getXMLFieldString(xmlFields, "QuoteID"));
+        String text = getXMLFieldString(xmlFields, "Text").replace("\n", "").replace("\t", "");
 
         //Getting Quote Data
-        String quoteDataString = findXMLData(quotesXMLPath, "Quotation", "ID", phQuoteId, true).get(0);
-        String quote = getXMLFieldString(quoteDataString, "Text");
-        int phStart =  Integer.parseInt(getXMLFieldString(quoteDataString, "StartIndex"));
-        int phEnd =  Integer.parseInt(getXMLFieldString(quoteDataString, "EndIndex"));
+        String quoteDataString = findXMLData(quotesXMLPath, "Quotation", "ID", quoteId, true).get(0);
+        Quotation q = makeQuotationFromString(quoteDataString);
 
-
-        Annotation anno = new Annotation(phCaseId, phAuthorId, phText, quote, phStart, phEnd);
-        anno.id = phId;
-        anno.getQuote().id = phQuoteId;
+        Annotation anno = new Annotation(caseId, authorId, text, q.getQuote(), q.getStartIndex(), q.getEndIndex());
+        anno.id = id;
+        anno.getQuote().id = quoteId;
 
         return anno;
     }
+
+    /**
+     * Builds a quotation object from a string of fields in xml format.
+     * @param xmlFields Quotation fields in xml format.
+     * @return Quotation object
+     */
+    private Quotation makeQuotationFromString(String xmlFields){
+        int id = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
+        String quote = getXMLFieldString(xmlFields, "Text");
+        int start =  Integer.parseInt(getXMLFieldString(xmlFields, "StartIndex"));
+        int end =  Integer.parseInt(getXMLFieldString(xmlFields, "EndIndex"));
+
+        Quotation q = new Quotation(quote, start, end);
+        q.id = id;
+
+        return q;
+    }
+
 
     /**
      * Builds a case object from a string of case fields in xml format.
@@ -270,24 +299,24 @@ public class XMLDataObjectFactory {
      * @return Case object
      */
     private Case makeCaseFromString(String xmlFields){
-        int phId = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
-        int phVersion = Integer.parseInt(getXMLFieldString(xmlFields, "Version"));
-        int phAuthorId = Integer.parseInt(getXMLFieldString(xmlFields, "AuthorID"));
-        boolean phAllowsAnnotations = Boolean.parseBoolean(getXMLFieldString(xmlFields, "AllowAnnotations"));
-        String phCaseText = getXMLFieldString(xmlFields, "Text");
+        int id = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
+        int version = Integer.parseInt(getXMLFieldString(xmlFields, "Version"));
+        int authorId = Integer.parseInt(getXMLFieldString(xmlFields, "AuthorID"));
+        boolean allowsAnnotations = Boolean.parseBoolean(getXMLFieldString(xmlFields, "AllowAnnotations"));
+        String caseText = getXMLFieldString(xmlFields, "Text");
 
-        Case c = new Case(phCaseText, phAuthorId);
-        c.id = phId;
-        c.version = phVersion;
-        c.allowsAnnotations = phAllowsAnnotations;
+        Case c = new Case(caseText, authorId);
+        c.id = id;
+        c.version = version;
+        c.allowsAnnotations = allowsAnnotations;
 
         return c;
     }
 
     /**
      * Given a list of annotations, the annotation xml file will be overwritten with this data.
-     * @param annotations
-     * @return
+     * @param annotations List of annotations to be written
+     * @return True if successful
      */
     private boolean writeOutAnnotations(List<Annotation> annotations){
         try {
@@ -335,7 +364,11 @@ public class XMLDataObjectFactory {
         return output;
     }
 
-
+    /**
+     * Overwrites the Quotation xml file using the given list of quotations.
+     * @param quotations List of Quotations to write.
+     * @return True if successful.
+     */
     private boolean writeOutQuotations(List<Quotation> quotations){
         try {
             BufferedWriter bw = new BufferedWriter(new PrintWriter(new File(quotesXMLPath)));
@@ -360,6 +393,11 @@ public class XMLDataObjectFactory {
         }
     }
 
+    /**
+     * Returns the XML representation of the given quotation object.
+     * @param q Quotation object to convert.
+     * @return XML string
+     */
     private String makeXMLStringFromQuotation(Quotation q){
         String output = "";
 
