@@ -56,6 +56,57 @@ public class XMLDataObjectFactory {
     }
 
     /**
+     * Returns all cases stored within the XML file as a list of case objects.
+     * @return List of all cases.
+     */
+    public List<Case> getAllCases(){
+        ArrayList<Case> cases = new ArrayList<>();
+
+        List<String> xmlDataStrings = findXMLData(caseXMLPath, "Case", null, 0, false);
+
+        for (String s : xmlDataStrings){
+            cases.add(makeCaseFromString(s));
+        }
+
+        return cases;
+    }
+
+    public List<Person> getAllPeople() {
+        ArrayList<Person> annotations = new ArrayList<>();
+
+        List<String> xmlDataStrings = findXMLData(personXMLPath, "Person", null, 0, false);
+
+        for (String s : xmlDataStrings){
+            annotations.add(makePersonFromString(s));
+        }
+
+        return annotations;
+    }
+
+    public List<Quotation> getAllQuotations() {
+        ArrayList<Quotation> annotations = new ArrayList<>();
+
+        List<String> xmlDataStrings = findXMLData(quotationXMLPath, "Quotation", null, 0, false);
+
+        for (String s : xmlDataStrings){
+            annotations.add(makeQuotationFromString(s));
+        }
+
+        return annotations;
+    }
+
+    public List<Annotation> getAllAnnotations() {
+        ArrayList<Annotation> annotations = new ArrayList<>();
+
+        List<String> xmlDataStrings = findXMLData(annotationXMLPath, "Annotation", null, 0, false);
+        for (String s : xmlDataStrings){
+            annotations.add(makeAnnotationFromString(s));
+        }
+
+        return annotations;
+    }
+
+    /**
      * Builds a Person object from the XML file for the ID given. Returns null if no person with this ID exists.
      * @param id Value of the ID
      * @return Person Object
@@ -90,22 +141,6 @@ public class XMLDataObjectFactory {
         }
 
         return annotations;
-    }
-
-    /**
-     * Returns all cases stored within the XML file as a list of case objects.
-     * @return List of all cases.
-     */
-    public List<Case> getAllCases(){
-        ArrayList<Case> cases = new ArrayList<>();
-
-        List<String> xmlDataStrings = findXMLData(caseXMLPath, "Case", null, 0, false);
-
-        for (String s : xmlDataStrings){
-            cases.add(makeCaseFromString(s));
-        }
-
-        return cases;
     }
 
     /**
@@ -236,13 +271,23 @@ public class XMLDataObjectFactory {
         return new Annotation(id, caseId, authorId, quoteId, text);
     }
 
+    /**
+     * Builds a Person object from a string of case fields in xml format.
+     * @param xmlFields Fields in xml format
+     * @return Person object
+     */
+    private Person makePersonFromString(String xmlFields){
+        int id = Integer.parseInt(getXMLFieldString(xmlFields, "ID"));
+        String forename = getXMLFieldString(xmlFields, "Forename");
+        String surname = getXMLFieldString(xmlFields, "Surname");
+        String email = getXMLFieldString(xmlFields, "Email");
 
         return new Person(id, forename, surname, email);
     }
 
     /**
-     * Builds a quotation object from a string of fields in xml format.
-     * @param xmlFields Quotation fields in xml format.
+     * Builds a Quotation object from a string of case fields in xml format.
+     * @param xmlFields Fields in xml format
      * @return Quotation object
      */
     private Quotation makeQuotationFromString(String xmlFields){
