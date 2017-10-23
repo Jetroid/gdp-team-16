@@ -7,6 +7,14 @@ public class Settings {
     private String quotationXMLLocation;
     private String annotationXMLLocation;
 
+    public Settings(){
+        String dir = System.getProperty("user.dir");
+        this.caseXMLLocation = dir + "/DataStore/Cases.xml";
+        this.peopleXMLLocation = dir + "/DataStore/People.xml";
+        this.quotationXMLLocation = dir + "/DataStore/Quotations.xml";
+        this.annotationXMLLocation = dir + "/DataStore/Annotations.xml";
+    }
+
     public Settings(String caseXMLLocation, String peopleXMLLocation, String quotationXMLLocation, String annotationXMLLocation) {
         this.caseXMLLocation = caseXMLLocation;
         this.peopleXMLLocation = peopleXMLLocation;

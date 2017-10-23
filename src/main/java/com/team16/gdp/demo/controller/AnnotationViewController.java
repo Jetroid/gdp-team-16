@@ -1,14 +1,13 @@
 package com.team16.gdp.demo.controller;
 
-import data.Annotation;
-import data.Person;
+import com.team16.gdp.demo.data.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Controller
 public class AnnotationViewController {
@@ -19,16 +18,15 @@ public class AnnotationViewController {
     String quotesum2 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris.";
 
     @RequestMapping("/annotations")
-    public String welcome(Model model) {
-
-        ArrayList<Annotation> annotations = new ArrayList<>();
-        annotations.add(new Annotation(1, ipsum, quotesum, 1, 2));
-        annotations.add(new Annotation(1, ipsum2, quotesum2, 1, 2));
-        model.addAttribute("annotations", annotations);
-
-        HashMap<Integer, Person> people = new HashMap<>();
-        people.put(1, new Person(1, "John", "Lemon", "jl@jl.net"));
-        model.addAttribute("people", people);
+    public String annotations(Model model) {
+        DataModel dataModel = new DataModel(new Settings());
+        CaseRelatedInfo info = dataModel.getCaseData(1);
+        HashMap<Integer, Annotation> annotations = info.getAnnotations();
+        HashMap<Integer, Person> authors = info.getPeople();
+        HashMap<Integer, Quotation> quotations = info.getQuotations();
+        model.addAttribute("annotations",annotations);
+        model.addAttribute("quotations",quotations);
+        model.addAttribute("authors",authors);
         return "welcome";
     }
 
