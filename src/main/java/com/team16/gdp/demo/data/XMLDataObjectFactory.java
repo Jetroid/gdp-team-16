@@ -171,20 +171,17 @@ public class XMLDataObjectFactory {
      * @param q A quotation to add
      * @return ID of the given Quotation in the XML file.
      */
-    public Integer addQuotation(Quotation q){
+    public boolean addQuotation(Quotation q){
         //Read all data into an list of data objects
-        List<String> annoStrings = findXMLData(quotationXMLPath, "Quotation", null, 0, false);
+        List<String> quotationStrings = findXMLData(quotationXMLPath, "Quotation", null, 0, false);
         List<Quotation> quotes = new ArrayList<>();
-        for(String s : annoStrings){
+        for(String s : quotationStrings){
             quotes.add(makeQuotationFromString(s));
         }
 
         //add to file:
         quotes.add(q);
-        writeOutQuotations(quotes);
-
-        //return the new ID.
-        return q.getId();
+        return writeOutQuotations(quotes);
     }
 
 

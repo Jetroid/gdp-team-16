@@ -17,7 +17,7 @@ public class DataModel implements DataAccessor {
     private static XMLDataObjectFactory persistence;
 
     public DataModel(Settings settings){
-        if (persistence.equals(null)) {
+        if (persistence == null) {
             persistence = new XMLDataObjectFactory(
                     settings.getCaseXMLLocation(),
                     settings.getAnnotationXMLLocation(),
@@ -88,6 +88,14 @@ public class DataModel implements DataAccessor {
 
     @Override
     public int createQuotation(int caseID, int start, int end, String text) {
+        int quotationId = quotationCount;
+        Quotation quotation = new Quotation(quotationId, caseID, text, start, end);
+        boolean successfulWrite = persistence.addQuotation(quotation);
+        if (successfulWrite){
+            quotationCount++;
+            quotations.put(quotationId, quotation);
+            return quotationId;
+        }
         return -1;
     }
 
