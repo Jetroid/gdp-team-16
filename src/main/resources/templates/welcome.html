@@ -9,13 +9,13 @@
 <div id="page-container">
     <h1>Annotations associated with document</h1>
     <div id="annotations">
-    <th:block th:each="annotation : ${annotations}">
-        <div class="annotation-container" th:id="'annotation' + ${annotation.id}">
-            <h2 th:text="'Written by ' + ${people.get(__${annotation.authorId}__).forename} + ' ' + ${people.get(__${annotation.authorId}__).surname}">
+    <th:block th:each="annotation : ${annotations.values()}">
+        <div class="annotation-container" th:id="'annotation' + ${annotation.getId()}">
+            <h2 th:text="'Written by ' + ${authors.get(__${annotation.authorId}__).getForename()} + ' ' + ${authors.get(__${annotation.authorId}__).getSurname()}">
                 Written by James Bond
             </h2>
             <div class="quotation-container">
-                <cite class="quotation" th:text="${annotation.quote}">Quote that is being quoted</cite>
+                <cite class="quotation" th:text="${quotations.get(__${annotation.getQuoteId()}__).getQuote()}">Quote that is being quoted</cite>
             </div>
             <p th:text="${annotation.text}">Text of an annotation</p>
         </div>
