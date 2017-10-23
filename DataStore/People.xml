@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<People>
+    <Person>
+        <ID>1</ID>
+        <Forename>Henry</Forename>
+        <Surname>Thomson</Surname>
+        <Email>h.thompson@example.com</Email>
+    </Person>
+
+    <Person>
+        <ID>2</ID>
+        <Forename>James</Forename>
+        <Surname>Jefferson</Surname>
+        <Email>jamesinator@example.com</Email>
+    </Person>
+
+</People>

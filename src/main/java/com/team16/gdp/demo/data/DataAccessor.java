@@ -1,16 +1,33 @@
-package data;
+package com.team16.gdp.demo.data;
 
 import java.util.List;
 
-/**
- * Created by Andy on 18/10/2017.
- */
 public interface DataAccessor {
 
+    int createCase(String text, int authorID);
+
+    /**
+     * Returns a Case when given the caseID.
+     * @param caseID ID of case
+     * @return Case associated with given ID
+     */
     Case readCase(int caseID);
 
+    /**
+     * Creates a new Annotation for the given case.
+     * @param caseID ID of case
+     * @param authorID ID of author
+     * @param quoteID ID of quotation
+     * @param text Text of the new annotation
+     * @return int ID of the newly created Annotation
+     */
     int createAnnotation(int caseID, int authorID, int quoteID, String text);
 
+    /**
+     * Returns a Annotation when given the annotationID.
+     * @param annotationID ID of annotation
+     * @return Annotation associated with given ID
+     */
     Annotation readAnnotation(int annotationID);
 
     boolean updateAnnotation(int annotationID, String text);
@@ -27,11 +44,11 @@ public interface DataAccessor {
 
     int createQuotation(int caseID, int start, int end, String text);
 
-    int readQuotation(int annotationID);
+    Quotation readQuotation(int quotationID);
 
-    boolean updateQuotation(int annotationID, String text);
+    boolean updateQuotation(int quotationID, int start, int end, String text);
 
-    boolean deleteQuotation(int annotationID);
+    boolean deleteQuotation(int quotationID);
 
     /**
      * Returns all annotations for a given case identified by its case ID.
@@ -59,7 +76,7 @@ public interface DataAccessor {
     boolean addAnnotation(int caseId, Annotation a);
 
     /**
-     * Retrieves the case object with all available data about the case given a case ID. Returns null if no case
+     * Retrieves the case object with all available com.team16.gdp.demo.data about the case given a case ID. Returns null if no case
      * exists with the provided ID.
      * @param caseId ID of case
      * @return Case object for this ID
@@ -81,19 +98,5 @@ public interface DataAccessor {
      * @return True if edit successful
      */
     boolean editAnnotation(int annoId, String newText);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Cases>
+  <Case>
+    <ID>1</ID>
+    <Version>1</Version>
+    <AuthorID>1</AuthorID>
+    <AllowAnnotations>True</AllowAnnotations>
+
+    <Text>This is a case.</Text>
+  </Case>
+
+</Cases>
