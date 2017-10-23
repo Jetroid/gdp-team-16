@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class DataAccessorTests {
 
-    private static Model dataAccessor;
+    private static DataModel dataAccessor;
     private static String firstname = "Greg";
     private static String surname = "Thompson";
     private static String email = "gt@participediademo.net";
@@ -46,7 +46,7 @@ public class DataAccessorTests {
         File quotationDest = new File(settings.getQuotationXMLLocation());
         copyFileUsingStream(quotationSource, quotationDest);
 
-        dataAccessor = new Model(settings);
+        dataAccessor = new DataModel(settings);
     }
 
     private static void copyFileUsingStream(File source, File dest) {

@@ -1,9 +1,10 @@
 package com.team16.gdp.demo.data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Model implements DataAccessor {
+public class DataModel implements DataAccessor {
 
     private static int caseCount = 0;
     private static HashMap<Integer, Case> cases = new HashMap<>();
@@ -13,16 +14,18 @@ public class Model implements DataAccessor {
     private static HashMap<Integer, Quotation> quotations = new HashMap<>();
     private static int annotationCount = 0;
     private static HashMap<Integer, Annotation> annotations = new HashMap<>();
-    XMLDataObjectFactory persistence;
+    private static XMLDataObjectFactory persistence;
 
-    public Model(Settings settings){
-        persistence = new XMLDataObjectFactory(
-                settings.getCaseXMLLocation(),
-                settings.getAnnotationXMLLocation(),
-                settings.getPeopleXMLLocation(),
-                settings.getQuotationXMLLocation()
-        );
-        readInAllData();
+    public DataModel(Settings settings){
+        if (persistence.equals(null)) {
+            persistence = new XMLDataObjectFactory(
+                    settings.getCaseXMLLocation(),
+                    settings.getAnnotationXMLLocation(),
+                    settings.getPeopleXMLLocation(),
+                    settings.getQuotationXMLLocation()
+            );
+            readInAllData();
+        }
     }
 
     @Override
@@ -104,33 +107,21 @@ public class Model implements DataAccessor {
     }
 
     @Override
-    public List<Annotation> getAnnotationsForCase(int caseId) {
-        return null;
-    }
-
-    @Override
-    public boolean canAnnotate(int caseId) {
-        return false;
-    }
-
-    @Override
-    public boolean addAnnotation(int caseId, Annotation a) {
-        return false;
-    }
-
-    @Override
-    public Case getCaseData(int caseId) {
-        return null;
-    }
-
-    @Override
-    public Person getPersonWithID(int personId) {
-        return null;
-    }
-
-    @Override
-    public boolean editAnnotation(int annoId, String newText) {
-        return false;
+    public CaseRelatedInfo getCaseData(int caseId) {
+        Case caseObj = cases.get(caseId);
+        HashMap<Integer, Annotation> annotations = new HashMap<>();
+        HashMap<Integer, Quotation> quotations = new HashMap<>();
+        HashMap<Integer, Person> people = new HashMap<>();
+        for(Annotation annotation : DataModel.annotations.values()){
+            if(annotation.getCaseId() == caseId) {
+                int quoteId = annotation.getQuoteId();
+                quotations.put(quoteId, DataModel.quotations.get(quoteId));
+                int personId = annotation.getAuthorId();
+                people.put(personId, DataModel.people.get(personId));
+                annotations.put(annotation.getId(), annotation);
+            }
+        }
+        return new CaseRelatedInfo(caseObj, annotations, people, quotations);
     }
 
     private void readInAllData(){
