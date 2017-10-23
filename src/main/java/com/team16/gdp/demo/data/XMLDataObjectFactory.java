@@ -405,6 +405,7 @@ public class XMLDataObjectFactory {
         output = output + "\t<Quotation>\n";
 
         output = output + "\t\t<ID>" + q.getId() + "</ID>\n";
+        output = output + "\t\t<CaseID>" + q.getCaseId() + "</CaseID>\n";
         output = output + "\t\t<StartIndex>" + q.getStartIndex() + "</StartIndex>\n";
         output = output + "\t\t<EndIndex>" + q.getEndIndex() + "</EndIndex>\n";
         output = output + "\t\t<Text>" + q.getQuote() + "</Text>\n";
