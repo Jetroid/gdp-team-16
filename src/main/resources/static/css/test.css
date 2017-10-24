@@ -2,7 +2,7 @@ body{
     background: #0f0f0f;
 }
 #page-container{
-    padding: 5px 15px;
+    padding: 30px 15px;
     background: #f0f0f0;
     position: relative;
     top: 50px;
@@ -11,14 +11,88 @@ body{
     width: 60%;
     border-radius: 30px;
 }
-.annotation-container{
+.annotation-container, #annotation-editor{
     background: #fafafa;
     padding: 5px 5px;
     border: solid 1px #020202;
-    border-radius: 2px;
+    border-radius: 4px;
+    margin: 10px 0px;
 }
-#annotations {
-
+#annotation-editor{
+    text-align: center;
+}
+#annotation-editor *{
+    text-align: left;
+}
+#annotation-editor textarea {
+    width: 98%;
+    margin-top: 20px;
+}
+.create-annotation-ui {
+	position: absolute;
+	transform: translate(-50%, -50%);
+    opacity: 1;
+}
+nav {
+	padding-top: 5px;
+    line-height:0;
+  	background: #0f0f0f;
+  	font-family: monospace;
+  	text-align:justify;
+}
+nav:after {
+    content:'';
+    display:inline-block;
+    width:99%;
+    vertical-align:top;
+}
+nav > * {
+	line-height: 1px;
+	position: relative;
+	top: -10px;
+	display:inline-block;
+}
+nav .active a{
+    background: #f0f0f0;
+}
+nav a {
+    font-size: 20px;
+    border-radius:3px 3px 0px 0px;
+    border: 1px solid #0f0f0f;
+    background:#7FB5DA;
+	display: inline;
+	text-decoration: none;
+}
+nav ul {
+	display: inline-block;
+	margin: 0;
+	text-align: right;
+	list-style: none;
+	padding: 0;
+}
+nav ul li {
+	right: 0;
+	padding: 20px 0.5vw 5px 3vw;
+	display: inline;
+}
+nav a > p {
+	display: inline;
+	font-size: 3vh;
+}
+nav > a {
+	bottom: 0;
+}
+nav > a > p {
+	padding: 5px 5px 5px 5px;
+	top: initial;
+	bottom: 0;
+}
+nav a:hover{
+	position: relative;
+	top: 3px;
+}
+.quotation {
+	background-color: orange;
 }
 .quotation-container{
     border: solid 2px #020202;
