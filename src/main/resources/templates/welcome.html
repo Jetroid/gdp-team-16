@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Participedia Annotation Demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Annotations Example</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/rangy/rangy-core.js"></script>
+    <script type="text/javascript" src="js/rangy/rangy-textrange.js"></script>
+    <script type="text/javascript" src="js/rangy/rangy-classapplier.js"></script>
+    <script type="text/javascript" src="js/rangy/rangy-highlighter.js"></script>
+    <script type="text/javascript" src="js/annotations.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/test.css"/>
+</head>
+<body>
+<div id="page-container">
+    <nav>
+        <ul id="tabs">
+            <li class="active"><a href="#case-container">Case</a></li>
+            <li><a href="#annotations-container">Annotations</a></li>
+        </ul>
+    </nav>
+    <div id="tab-container">
+        <div id="case-container" class="tab">
+            <!-- Cases also need titles - who would have thought? !-->
+            <h1>1st Inuit Youth Symposium on the Inuit Language</h1>
+            <div id="case" th:utext="${case.getCaseText()}">
+                You need to specify a case id in the URL parameter.
+            </div>
+        </div>
+        <div id="annotations-container" class="tab">
+            <h1>Annotations associated with document</h1>
+            <div id="annotations">
+            <th:block th:each="annotation : ${annotations.values()}">
+                <div class="annotation-container" th:id="'annotation' + ${annotation.getId()}">
+                    <h2 th:text="'Written by ' + ${authors.get(__${annotation.authorId}__).getForename()} + ' ' + ${authors.get(__${annotation.authorId}__).getSurname()}">
+                        Written by James Bond
+                    </h2>
+                    <div class="quotation-container">
+                        <cite class="quotation" th:text="${quotations.get(__${annotation.getQuoteId()}__).getQuote()}">Quote that is being quoted</cite>
+                    </div>
+                    <p th:text="${annotation.text}">Text of an annotation</p>
+                </div>
+            </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
