@@ -1,5 +1,5 @@
 window.onload = function() {
-    var quotations = [];
+    //var quotations = []; // now initialised in welcome.html
     var selectionText = "";
     var selectionStartOffset = 0;
     var selectionEndOffset = 0;
@@ -59,6 +59,8 @@ window.onload = function() {
                 return;
             }
 
+            console.log(offsets.start + ", " + offsets.end);
+
             // the text and start/end indexes of the selected text
             selectionText = text;
             selectionStartOffset = offsets.start;
@@ -88,6 +90,8 @@ window.onload = function() {
         var text = selectionText;
         var start = selectionStartOffset;
         var end = selectionEndOffset;
+
+        console.log("creating quotation with start: " + start + " end: " + end);
 
         // check an identical quotation does not already exist
         if (quotationExists(start, end)) {
@@ -199,6 +203,19 @@ window.onload = function() {
         editor.appendChild(p);
     }
 
+    function showAnnotationsTab() {
+        var currentAttrValue = jQuery(this).attr('href');
+
+        // Show/Hide Tabs
+        $('#tab-container ' + currentAttrValue).show().siblings().hide();
+
+        // Change/remove current tab to active
+        //$(this).parent('li').addClass('active').siblings().removeClass('active');
+
+        //e.preventDefault();
+        return false;
+    }
+
     // adds styling and links to all quotations
     function updateStyling() {
         // clear existing highlights
@@ -209,7 +226,10 @@ window.onload = function() {
             var quo = quotations[i];
             // create a new range encompassing the quotation text and apply it to the selection
             var range = rangy.createRange();
-            range.selectCharacters(document.getElementById('case'), quo.start, quo.end);
+            //var linktext = "quotations#" + quo.startIndex + "-" + quo.endIndex;
+            var linktext = "#annotations-container";
+            var offset = linktext.length - 4;
+            range.selectCharacters(document.getElementById('case'), quo.startIndex + offset, quo.endIndex + offset);
 
             // from the range we can convert to a CharacterRange
             var converter = highlighter.converter;
@@ -218,6 +238,8 @@ window.onload = function() {
             // each quotation is applied one at a time so the correct quotation link can be manually inserted
             var charRanges = [];
             charRanges.push(charRange);
+            console.log("char range");
+            console.log(charRange);
             highlighter.highlightCharacterRanges("quotation", charRanges);
 
             // add links manually to the highlights
@@ -227,8 +249,11 @@ window.onload = function() {
                 if(highlights[j].href !== "") {
                     continue;
                 }
+
                 // set the link to be the quotations discussion page with an anchor pointing to the quotation
-                highlights[j].href = "quotations#" + quo.start + "-" + quo.end;
+                //highlights[j].href = "quotations#" + quo.startIndex + "-" + quo.endIndex;
+                highlights[j].href = "#annotations-container";
+                highlights[j].onclick = showAnnotationsTab;
             }
         }
     }
@@ -244,6 +269,8 @@ window.onload = function() {
         }
         return false;
     }
+
+    updateStyling();
 
     // on releasing the mouse check for selected text
     $(document).click(function (e) {

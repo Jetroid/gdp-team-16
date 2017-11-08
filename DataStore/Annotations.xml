@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Annotations>
 	<Annotation>
-		<ID>4</ID>
+		<ID>0</ID>
 		<CaseID>1</CaseID>
-		<AuthorID>2</AuthorID>
-		<QuoteID>1</QuoteID>
+		<AuthorID>1</AuthorID>
+		<QuoteID>0</QuoteID>
 		<Text>
-			This is really cool!
+			I believe they we're actually American.
 		</Text>
 	</Annotation>
+
+	<Annotation>
+		<ID>0</ID>
+		<CaseID>1</CaseID>
+		<AuthorID>1</AuthorID>
+		<QuoteID>0</QuoteID>
+		<Text>
+			Really interesting
+		</Text>
+	</Annotation>
+
 </Annotations>
