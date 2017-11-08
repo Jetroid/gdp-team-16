@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Quotations>
 	<Quotation>
+		<ID>0</ID>
+		<CaseID>1</CaseID>
+		<StartIndex>154</StartIndex>
+		<EndIndex>181</EndIndex>
+		<Text>South Australian government</Text>
+	</Quotation>
+
+	<Quotation>
 		<ID>1</ID>
 		<CaseID>1</CaseID>
-		<StartIndex>199</StartIndex>
-		<EndIndex>471</EndIndex>
-		<Text>The purpose of the 1st Inuit Circumpolar Youth Symposium was to bring together Inuit youth from around the globe in order to unify the Inuit community by developing strategies aimed at cultivating a common Inuit language and a true to commitment to utilizing the language.</Text>
+		<StartIndex>674</StartIndex>
+		<EndIndex>702</EndIndex>
+		<Text>solid evidence base on which</Text>
+	</Quotation>
+
+	<Quotation>
+		<ID>2</ID>
+		<CaseID>1</CaseID>
+		<StartIndex>1174</StartIndex>
+		<EndIndex>1247</EndIndex>
+		<Text>This initiative is part of the SA government's Reforming Democracy agenda</Text>
 	</Quotation>
 
 </Quotations>
