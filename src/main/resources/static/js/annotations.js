@@ -228,7 +228,8 @@ window.onload = function() {
             var range = rangy.createRange();
             //var linktext = "quotations#" + quo.startIndex + "-" + quo.endIndex;
             var linktext = "#annotations-container";
-            var offset = linktext.length - 4;
+            var taglength = 4;
+            var offset = linktext.length - taglength;
             range.selectCharacters(document.getElementById('case'), quo.startIndex + offset, quo.endIndex + offset);
 
             // from the range we can convert to a CharacterRange
