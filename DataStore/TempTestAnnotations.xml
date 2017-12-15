@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Annotations>
+	<Annotation>
+		<ID>1</ID>
+		<CaseID>1</CaseID>
+		<AuthorID>2</AuthorID>
+		<QuoteID>1</QuoteID>
+		<Text>
+			            Your study is bad and you should feel bad.
+		</Text>
+	</Annotation>
+
+	<Annotation>
+		<ID>2</ID>
+		<CaseID>-1</CaseID>
+		<AuthorID>-1</AuthorID>
+		<QuoteID>5</QuoteID>
+		<Text>
+			Annotation about the quote
+		</Text>
+	</Annotation>
+
+	<Annotation>
+		<ID>3</ID>
+		<CaseID>-1</CaseID>
+		<AuthorID>-1</AuthorID>
+		<QuoteID>6</QuoteID>
+		<Text>
+			Annotation about the quote
+		</Text>
+	</Annotation>
+
+</Annotations>
