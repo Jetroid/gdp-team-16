@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Quotations>
-	<Quotation>
-		<ID>0</ID>
-		<CaseID>1</CaseID>
-		<StartIndex>154</StartIndex>
-		<EndIndex>181</EndIndex>
-		<Text>South Australian government</Text>
-	</Quotation>
+
 
 	<Quotation>
 		<ID>1</ID>
 		<CaseID>1</CaseID>
-		<StartIndex>674</StartIndex>
-		<EndIndex>702</EndIndex>
-		<Text>solid evidence base on which</Text>
-	</Quotation>
-
-	<Quotation>
-		<ID>2</ID>
-		<CaseID>1</CaseID>
-		<StartIndex>1174</StartIndex>
-		<EndIndex>1247</EndIndex>
-		<Text>This initiative is part of the SA government's Reforming Democracy agenda</Text>
+		<StartIndex>958</StartIndex>
+		<EndIndex>1015</EndIndex>
+		<Text>The Royal Commission is independent from state government</Text>
 	</Quotation>
 
 </Quotations>

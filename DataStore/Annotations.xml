@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Annotations>
-	<Annotation>
-		<ID>0</ID>
-		<CaseID>1</CaseID>
-		<AuthorID>1</AuthorID>
-		<QuoteID>0</QuoteID>
-		<Text>
-			I believe they were actually american
-		</Text>
-	</Annotation>
+
 
 	<Annotation>
 		<ID>1</ID>
@@ -16,17 +8,7 @@
 		<AuthorID>1</AuthorID>
 		<QuoteID>1</QuoteID>
 		<Text>
-			actually the evidence is rather flimsy
-		</Text>
-	</Annotation>
-
-	<Annotation>
-		<ID>2</ID>
-		<CaseID>1</CaseID>
-		<AuthorID>1</AuthorID>
-		<QuoteID>2</QuoteID>
-		<Text>
-			yep
+			An interesting fact is that this has only been the case for the last 5 years!
 		</Text>
 	</Annotation>
 
