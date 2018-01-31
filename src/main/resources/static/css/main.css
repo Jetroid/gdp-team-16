@@ -1,5 +1,23 @@
+html, body {
+	height: 75%;
+}
+
+html {
+	display: table;
+	margin: auto;
+}
+
 body {
-	position: relative;
+	display: table-cell;
+	vertical-align: middle;
+	word-wrap: break-word;
+	width: 800px;
+}
+
+.center {
+	margin: auto;
+	width: 100%;
+	padding: 10px;
 }
 
 .create-annotation-ui {

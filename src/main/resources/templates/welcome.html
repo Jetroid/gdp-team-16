@@ -9,9 +9,24 @@
     <script type="text/javascript" src="js/rangy/rangy-textrange.js"></script>
     <script type="text/javascript" src="js/rangy/rangy-classapplier.js"></script>
     <script type="text/javascript" src="js/rangy/rangy-highlighter.js"></script>
+    <script type="text/javascript" src="js/semantic-ui/transition.js"></script>
+    <script type="text/javascript" src="js/semantic-ui/dimmer.js"></script>
+    <script type="text/javascript" src="js/semantic-ui/modal.js"></script>
     <script type="text/javascript" src="js/annotations.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/semantic-ui/semantic.css" />
     <link rel="stylesheet" type="text/css" href="css/main.css"/>
-    <link type="text/css" rel="stylesheet" href="/css/test.css"/>
+    <link rel="stylesheet" type="text/css" href="css/test.css"/>
+
+    <!-- retrieve quotation variables from the model !-->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // get quotations data from model
+        var obj = [[${quotations}]];
+        // convert to array
+        var quotations = Object.values(obj);
+        /*]]>*/
+    </script>
 </head>
 <body>
 <div id="page-container">
@@ -23,13 +38,29 @@
     </nav>
     <div id="tab-container">
         <div id="case-container" class="tab">
-            <!-- Cases also need titles - who would have thought? !-->
-            <h1>1st Inuit Youth Symposium on the Inuit Language</h1>
-            <div id="case" th:utext="${case.getCaseText()}">
+<!--            <div id="case" th:utext="${case.getCaseText()}">
                 You need to specify a case id in the URL parameter.
+            </div>-->
+            <div id="case">
+                <br></br>
+                <!-- Participedia example case start -->
+                <h2 class="ui header">CASE</h2>
+                <h1 class="ui header">Get to know Nuclear: Nuclear Fuel Cycle engagement in South Australia</h1>
+                <div class="single-image"><img class="portrait" src="https://s3.amazonaws.com/uploads.participedia.xyz/160625_JURY1_DAY1_187.jpg"></img></div>
+                <h4 class="ui header">First submitted by Ryan Cote<div class="sub header">August 26, 2016</div></h4>
+                <h2 class="ui header">Problems and Purpose</h2>
+                <p>In 2015 the South Australian government established a Royal Commission to investigate the implications for the state's involvement in the four stages of the nuclear fuel cycle (mining, enrichment, energy and storage). The final report was presented to the government in May 2016 and forms the starting point for this state-wide engagement process. The report concludes that is safe for South Australia to participate in these activities and makes some recommendations on costs and revenue.</p>
+                <p>The Royal Commission's findings provide a solid evidence base on which South Australians can evaluate their positions on the state's future role in nuclear fuel. The aims of the engagement process are two-fold: to inform the community of the findings and understand the evidence, as well as considering the options available. The Royal Commission is independent from state government.</p>
+                <h2 class="ui header">History</h2>
+                <p>The South Australian government has a strong record for implementing deliberative democratic processes and seeking community engagement in politics. This initiative is part of the SA government's Reforming Democracy agenda, which aims to deliver 'four deliberative democracy projects' as well as a range of other engagement processes which "include a focus on the use of digital technologies and explore the application of crowd sourcing, collaborative working and resource sharing, and design thinking approaches to areas of government activity" (YourSAy 2016).</p>
+                <p>The impetus behind the Nuclear engagement was that "there is a tradeoff worth exploring" (newDemocracy Foundation 2016). The Royal Commission Report concluded that nuclear fuel storage could add significantly to the SA economy. However, this is a controversial issue with strong feelings on either side. The engagement strategy for the initiative was prepared by newDemocracy and outlined two key problems that the process aims top counter: firstly, that no one really reads Royal Commission reports and secondly that most people assume that despite engaging with the community, government decision-makers have usually already made a decision either way. The process was designed with these two challenges in mind.</p>
+                <h2 class="ui header">Originating Entities and Funding</h2>
+                <p>This process was instigated and funded by the government of South Australia. newDemocracy Foundation, an independent nonprofit organisation, designed an engagement strategy for the nuclear issue and designed the engagement process for the two citizens' juries. DemocracyCo facilitated the first jury in July 2016.</p>
+                <h2 class="ui header">Participant Selection</h2>
+                <p>The recruitment of participants for Citizens' Jury 1 was carried out by newDemocracy, independently from government. Invitations were sent out to a random sample of 25,000 households generated by software. Addresses were provided by Australia Post's database and invitations were sent by post. 1,121 people then registered their interest in taking part, and a random stratified sample was taken from this group to ensure that the final jury reflected the demographics of the South Australian population. The final jurors selected numbered 54 - with 4 of those as reserves in case of emergency (YourSAy 2016a).</p>
             </div>
         </div>
-        <div id="annotations-container" class="tab">
+        <div id="annotations-container" class="tab" style="display:none;" >
             <h1>Annotations associated with document</h1>
             <div id="annotations">
             <th:block th:each="annotation : ${annotations.values()}">
